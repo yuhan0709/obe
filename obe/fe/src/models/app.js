@@ -1,88 +1,79 @@
-import { routerRedux } from 'dva/router'
-import { Login, Logout, GetUserInfo } from '../services/user.js'
+import { routerRedux } from "dva/router";
+import { Login, Logout, GetUserInfo } from "../services/user.js";
 
 export default {
-  namespace: 'app',
+  namespace: "app",
   state: {
-    isLogin: false,
+    isLogin: window.localStorage.getItem("isLogin"),
     user: {},
-    locationPathname: ''
+    locationPathname: "",
   },
   subscriptions: {
-
-    setupHistory ({ dispatch, history }) {
+    setupHistory({ dispatch, history }) {
       history.listen((location) => {
         dispatch({
-          type: 'updateState',
+          type: "updateState",
           payload: {
             locationPathname: location.pathname,
           },
-        })
-      })
+        });
+      });
     },
 
     // 初始化
-    setup ({ dispatch }) {
-      dispatch({ type: 'getUserInfo' })
+    setup({ dispatch }) {
+      dispatch({ type: "getUserInfo" });
     },
-
   },
   effects: {
-
-    * login ({
-      payload: { opts, cb },
-    }, { call, put }) {
-      const cbValues = yield call(Login, opts)
-      const { status, data } = cbValues.data
+    *login({ payload: { opts, cb } }, { call, put }) {
+      const cbValues = yield call(Login, opts);
+      const { status, data } = cbValues.data;
 
       if (status == 1) {
         yield put({
-          type: 'updateState',
+          type: "updateState",
           payload: {
             user: data,
-            isLogin: true
+            isLogin: true,
           },
-        })
-        cb && cb(1, '登录成功')
+        });
+        cb && cb(1, "登录成功");
       } else {
-        cb && cb(0, data)
+        cb && cb(0, data);
       }
     },
 
-    * logout ({
-      payload: { opts, cb },
-    }, { call, put }) {
-      const cbValues = yield call(Logout, opts)
-      const { status, data } = cbValues.data
+    *logout({ payload: { opts, cb } }, { call, put }) {
+      const cbValues = yield call(Logout, opts);
+      const { status, data } = cbValues.data;
 
       if (status == 1) {
         yield put({
-          type: 'updateState',
+          type: "updateState",
           payload: {
             user: {},
-            isLogin: false
+            isLogin: false,
           },
-        })
-        cb && cb(data)
+        });
+        cb && cb(data);
       }
     },
-    
-    * getUserInfo ({
-      payload,
-    }, { call, put }) {
+
+    *getUserInfo({ payload }, { call, put }) {
       const opts = {
-        method: 'GET',
+        method: "GET",
         // 巨坑，不设置通过接口请求的时候后端是接受不到session的
-        credentials: 'include',
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-      }
-      const data = yield call(GetUserInfo, opts)
+      };
+      const data = yield call(GetUserInfo, opts);
       yield put({
-        type: 'updateState',
+        type: "updateState",
         payload: data.data.data,
-      })
+      });
     },
 
     // * query ({
@@ -147,14 +138,13 @@ export default {
     //     yield put({ type: 'handleNavbar', payload: isNavbar })
     //   }
     // },
-
   },
   reducers: {
-    updateState (state, { payload }) {
+    updateState(state, { payload }) {
       return {
         ...state,
         ...payload,
-      }
+      };
     },
 
     // switchSider (state) {
@@ -164,6 +154,5 @@ export default {
     //     siderFold: !state.siderFold,
     //   }
     // },
-
   },
-}
+};

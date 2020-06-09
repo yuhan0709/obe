@@ -3,7 +3,7 @@
 }
 
 .sidbarWrap {
-  padding-bottom: 1000px; 
+  padding-bottom: 1000px;
   margin-bottom: -1000px;
   overflow: hidden;
 }
@@ -21,7 +21,7 @@
 .contentWrap {
   padding: 30px;
   position: relative;
-  padding-bottom: 1000px; 
+  padding-bottom: 1000px;
   margin-bottom: -1000px;
   background-color: #fff;
   overflow: hidden;
